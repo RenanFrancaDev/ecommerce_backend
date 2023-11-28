@@ -9,7 +9,7 @@ router.post('/create', (req, res) => {
     const db = req.dbConnection;
     const { name, email, password } = req.body;
 
-    const sql = "INSERT INTO clients (name, email, password) VALUES (?, ?, ?)";
+    const sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
     const values = [name, email, password];
 
     db.query(sql, values, (err, results) => {
@@ -31,7 +31,7 @@ router.post('/create', (req, res) => {
 router.get('/', (req, res) => {
   try {
     const db = req.dbConnection;
-    const sql = "SELECT * FROM clients"
+    const sql = "SELECT * FROM users"
 
     db.query(sql, (err, results) => {
       if (err) {
@@ -53,7 +53,7 @@ router.get('/:id', (req, res) => {
   try {
     const db = req.dbConnection;
     const id = req.params.id;
-    const sql = "SELECT * FROM clients WHERE id = ?"
+    const sql = "SELECT * FROM users WHERE id = ?"
 
     db.query(sql, [id], (err, results) => {
       if (err) {
@@ -99,7 +99,7 @@ router.delete('/:id', (req, res) => {
   try {
     const db = req.dbConnection;
     const id = req.params.id
-    const sql = "DELETE FROM clients WHERE id = ?"
+    const sql = "DELETE FROM users WHERE id = ?"
 
     db.query(sql, [id], (err, results) => {
       if (err) {
