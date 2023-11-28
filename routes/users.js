@@ -5,12 +5,16 @@ router.use(express.json())
 router.use(connectDatabase);
 
 router.post('/create', (req, res) => {
+ 
   try {
     const db = req.dbConnection;
     const { name, email, password } = req.body;
+    // res.status(200).json({ mgs: 'OK', name, email, password })
 
     const sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
     const values = [name, email, password];
+
+    console.log(values)
 
     db.query(sql, values, (err, results) => {
       if (err) {
