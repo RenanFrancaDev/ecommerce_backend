@@ -9,7 +9,7 @@ router.post('/register', (req, res) => {
   const db = req.dbConnection;
   const { name, description, price } = req.body;
   
-  sql = 'INSERT INTO products (name, description, price) VALUES (?, ?, ?)';
+  const sql = 'INSERT INTO products (name, description, price) VALUES (?, ?, ?)';
   const values = [name, description, price];
 
   db.query(sql, values, (err, results) => {
