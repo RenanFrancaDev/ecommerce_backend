@@ -92,19 +92,27 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   const db = req.dbConnection;
   const id = req.params.id;
-
-  const sql = 'DELETE FROM products WHERE id = ?';
+  
+  const sql = 'DELETE FROM stock WHERE id_product = ?';
+  const sql2 = 'DELETE FROM products WHERE id = ?';
 
   db.query(sql, [id], (err, results) => {
     if (err) {
       console.error('Erro ao excluir produto do banco de dados:', err);
       return res.status(500).json({ error: 'Erro interno do servidor' });
     }
+  });
+
+  db.query(sql2, [id], (err, results) => {
+    if (err) {
+      console.error('Erro ao excluir produto do banco de dados:', err);
+      return res.status(500).json({ error: 'Erro interno do servidor' });
+    }
 
     res.json({ data: results });
-    
     db.release();
-  });
+
+    });
 });
 
 module.exports = router;
