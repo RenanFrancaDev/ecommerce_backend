@@ -105,6 +105,28 @@ router.post("/", async function (req, res) {
   }
 });
 
+// get all sales
+router.get("/all", (req, res) => {
+  const db = req.dbConnection;
+
+  db.query("SELECT * FROM sales", (err, results) => {
+    if (err) {
+      console.error("Erro na consulta ao banco de dados:", err);
+      return res.status(500).json({ error: "Erro interno do servidor" });
+    }
+
+    console.log(results);
+
+    res.status(200).json({
+      status: "OK",
+      mensagem: "Sucesso ao consultar vendas",
+      data: results,
+    });
+
+    db.release();
+  });
+});
+
 // GET sale by id
 router.get("/:id", (req, res) => {
   const db = req.dbConnection;
@@ -128,27 +150,5 @@ router.get("/:id", (req, res) => {
   });
 });
 
-
-// get all sales
-router.get("/all", (req, res) => {
-  const db = req.dbConnection;
-
-  db.query("SELECT * FROM sales", (err, results) => {
-    if (err) {
-      console.error("Erro na consulta ao banco de dados:", err);
-      return res.status(500).json({ error: "Erro interno do servidor" });
-    }
-
-    console.log(results);
-
-    res.status(200).json({
-      status: "OK",
-      mensagem: "Sucesso ao consultar vendas",
-      data: results,
-    });
-
-    db.release();
-  });
-});
 
 module.exports = router;
