@@ -11,15 +11,16 @@ router.post("/", async function (req, res) {
   const { products, id_user } = req.body;
   let stock_ok = true; //validation
 
-
     // validation quantity os the stock
   for (const element of products) {
     try {
+      
       const response = await axios.get(
-        `http://localhost:4000/stock/${element.id_product}`
+        `http://localhost:4000/stock/${element.id}`
       );
       const result = response.data.result;
       const quantity = result.quantity;
+
 
       if (element.quantity > quantity) {
         stock_ok = false;
@@ -39,6 +40,7 @@ router.post("/", async function (req, res) {
 
     db.query(sql, salevalue, (err, results) => {
       if (err) {
+        
         console.error("Erro ao criar produto no banco de dados:", err);
         return res.status(500).json({ error: err });
       }
@@ -49,10 +51,10 @@ router.post("/", async function (req, res) {
       // INSERT ORDER_PRODUCT TABLE
       for (const product of products) {
         sqlProductSales =
-          "INSERT INTO order_product (id_sales, id_product, quantiy) VALUES (?, ?, ?)";
+          "INSERT INTO order_product (id_sales, id_product, quantity) VALUES (?, ?, ?)";
         const valuesProductSales = [
           saleId,
-          product.id_product,
+          product.id,
           product.quantity,
         ];
         db.query(sqlProductSales, valuesProductSales, (err, results) => {
@@ -71,17 +73,17 @@ router.post("/", async function (req, res) {
         //UPDATE STOCK AFTER ORDER - REQUEST API
         axios
           .put(
-            `http://localhost:4000/stock/update/${product.id_product}`,
+            `http://localhost:4000/stock/update/${product.id}`,
             requestBody
           )
           .then((response) => {
             if (response.status === 200) {
               console.log(
-                `Estoque atualizado com sucesso para o produto ${produto.produto_id}`
+                `Estoque atualizado com sucesso para o produto ${product.id}`
               );
             } else {
               console.error(
-                `Erro ao atualizar o estoque para o produto ${produto.produto_id}`
+                `Erro ao atualizar o estoque para o produto ${product.id}`
               );
             }
           })
@@ -92,13 +94,14 @@ router.post("/", async function (req, res) {
           });
       }
 
-      db.query("UPDATE vendas SET total_price = ? WHERE id = ?", [
+      db.query("UPDATE sales SET total_price = ? WHERE id = ?", [
         totalValue,
         saleId,
       ]);
 
       res.status(200).send("Venda inserida com sucesso!");
     });
+    db.release();
   }
 });
 
