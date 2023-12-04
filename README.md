@@ -115,7 +115,7 @@ AUTO_INCREMENT=10
   ```
 #### Create User
   ```
-    POST /create
+    POST /users/create
   ```
 ###### Data (Example)
   ```json
